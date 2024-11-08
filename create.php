@@ -2,26 +2,23 @@
 
 $app = require "./core/app.php";
 
-// Sanitize and validate inputs
 $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_STRING);
+$phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
 
-if (!$name || !$email || !$city) {
-    // Redirect back with an error message if validation fails
+if (!$name || !$email || !$city || !$phone) {
     header('Location: index.php?error=Invalid input');
     exit;
 }
 
-// Create new instance of user
 $user = new User($app->db);
 
-// Insert it to database with validated data
 $user->insert(array(
     'name' => $name,
     'email' => $email,
-    'city' => $city
+    'city' => $city,
+	'phone' => $phone
 ));
 
-// Redirect back to index
-header('Location: index.php');
+echo json_encode(['name' => $name, 'email' => $email, 'city' => $city, 'phone' => $phone]);

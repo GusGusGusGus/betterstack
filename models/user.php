@@ -24,13 +24,17 @@ class User extends BaseModel{
 		return $this->getField('city');
 	}
 
-	public function insert($data) {
-        $stmt = $this->db->mysqli->prepare("INSERT INTO " . self::tableName . " (name, email, city) VALUES (?, ?, ?)");
+	public function getPhone() {
+        return $this->getField('phone');
+    }
+
+    public function insert($data) {
+        $stmt = $this->db->mysqli->prepare("INSERT INTO " . self::tableName . " (name, email, city, phone) VALUES (?, ?, ?, ?)");
         if ($stmt === false) {
             die("Prepare failed: (" . $this->db->mysqli->errno . ") " . $this->db->mysqli->error);
         }
 
-        $stmt->bind_param('sss', $data['name'], $data['email'], $data['city']);
+        $stmt->bind_param('ssss', $data['name'], $data['email'], $data['city'], $data['phone']);
         if (!$stmt->execute()) {
             die("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
         }

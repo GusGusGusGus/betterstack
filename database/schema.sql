@@ -49,3 +49,13 @@ INSERT INTO `users` (`id`, `name`, `email`, `city`, `created_at`) VALUES
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- Add phone column to users table
+ALTER TABLE `users` ADD `phone` VARCHAR(15) NOT NULL AFTER `city`;
+
+-- Update existing data with dummy phone numbers (optional)
+UPDATE `users` SET `phone` = '123-456-7890' WHERE `id` = 1;
+UPDATE `users` SET `phone` = '234-567-8901' WHERE `id` = 2;
+UPDATE `users` SET `phone` = '345-678-9012' WHERE `id` = 3;
+UPDATE `users` SET `phone` = '456-789-0123' WHERE `id` = 4;
+UPDATE `users` SET `phone` = '567-890-1234' WHERE `id` = 5;

@@ -3,24 +3,26 @@
     <label for="cityFilter" class="control-label">Filter by City:</label>
     <input type="text" id="cityFilter" class="form-control" placeholder="Enter city name">
 </div>
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>E-mail</th>
-			<th>City</th>
-		</tr>
-	</thead>
-	<tbody>
-		<?foreach($users as $user){?>
-		<tr>
-			<td><?=$user->getName()?></td>
-			<td><?=$user->getEmail()?></td>
-			<td><?=$user->getCity()?></td>
-		</tr>
-		<?}?>
-	</tbody>
-</table>				
+<table class="table table-striped" id="userTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>E-mail</th>
+            <th>City</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?foreach($users as $user){?>
+        <tr>
+            <td><?=$user->getName()?></td>
+            <td><?=$user->getEmail()?></td>
+            <td><?=$user->getCity()?></td>
+            <td><?=$user->getPhone()?></td>
+        </tr>
+        <?}?>
+    </tbody>
+</table>
 
 <form id="userForm" class="form-horizontal">
     <div class="form-group">
@@ -42,6 +44,12 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="phone" class="col-sm-2 control-label">Phone:</label>
+        <div class="col-sm-10">
+            <input name="phone" type="text" class="form-control" id="phone"/>
+        </div>
+    </div>
+    <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-primary">Create new row</button>
         </div>
@@ -58,15 +66,14 @@ $(document).ready(function() {
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
-               
                 var newUser = JSON.parse(response);
 
-                
                 $('#userTable tbody').append(
                     '<tr>' +
                     '<td>' + newUser.name + '</td>' +
                     '<td>' + newUser.email + '</td>' +
                     '<td>' + newUser.city + '</td>' +
+                    '<td>' + newUser.phone + '</td>' +
                     '</tr>'
                 );
 
