@@ -22,44 +22,60 @@
 	</tbody>
 </table>				
 
-<form method="post" action="create.php" class="form-horizontal">
-	<div class="form-group">
-		<label for="name" class="col-sm-2 control-label">Name:</label>
-		<div class="col-sm-10">
-			<input name="name" type="text" class="form-control" id="name"/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="email" class="col-sm-2 control-label">E-mail:</label>
-		<div class="col-sm-10">
-			<input name="email" type="text" class="form-control" id="email"/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="city" class="col-sm-2 control-label">City:</label>
-		<div class="col-sm-10">
-			<input name="city" type="text" class="form-control" id="city"/>
-		</div>
-	</div>
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-primary">Create new row</button>
-		</div>
-	</div>
+<form id="userForm" class="form-horizontal">
+    <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Name:</label>
+        <div class="col-sm-10">
+            <input name="name" type="text" class="form-control" id="name"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="email" class="col-sm-2 control-label">E-mail:</label>
+        <div class="col-sm-10">
+            <input name="email" type="text" class="form-control" id="email"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="city" class="col-sm-2 control-label">City:</label>
+        <div class="col-sm-10">
+            <input name="city" type="text" class="form-control" id="city"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Create new row</button>
+        </div>
+    </div>
 </form>
 
 <script>
-document.getElementById('cityFilter').addEventListener('keyup', function() {
-    var filter = this.value.toLowerCase();
-    var rows = document.querySelectorAll('#userTable tbody tr');
+$(document).ready(function() {
+    $('#userForm').on('submit', function(event) {
+        event.preventDefault(); 
 
-    rows.forEach(function(row) {
-        var city = row.cells[2].textContent.toLowerCase();
-        if (city.includes(filter)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
+        $.ajax({
+            url: 'create.php',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+               
+                var newUser = JSON.parse(response);
+
+                
+                $('#userTable tbody').append(
+                    '<tr>' +
+                    '<td>' + newUser.name + '</td>' +
+                    '<td>' + newUser.email + '</td>' +
+                    '<td>' + newUser.city + '</td>' +
+                    '</tr>'
+                );
+
+                $('#userForm')[0].reset();
+            },
+            error: function() {
+                alert('There was an error processing your request.');
+            }
+        });
     });
 });
 </script>
