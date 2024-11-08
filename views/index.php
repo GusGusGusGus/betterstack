@@ -1,5 +1,8 @@
 <h1>PHP Test Application</h1>
-
+<div class="form-group">
+    <label for="cityFilter" class="control-label">Filter by City:</label>
+    <input type="text" id="cityFilter" class="form-control" placeholder="Enter city name">
+</div>
 <table class="table table-striped">
 	<thead>
 		<tr>
@@ -44,3 +47,19 @@
 		</div>
 	</div>
 </form>
+
+<script>
+document.getElementById('cityFilter').addEventListener('keyup', function() {
+    var filter = this.value.toLowerCase();
+    var rows = document.querySelectorAll('#userTable tbody tr');
+
+    rows.forEach(function(row) {
+        var city = row.cells[2].textContent.toLowerCase();
+        if (city.includes(filter)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
