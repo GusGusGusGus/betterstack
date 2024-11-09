@@ -13,14 +13,22 @@
         </tr>
     </thead>
     <tbody>
-        <?foreach($users as $user){?>
-        <tr>
-            <td><?=$user->getName()?></td>
-            <td><?=$user->getEmail()?></td>
-            <td><?=$user->getCity()?></td>
-            <td><?=$user->getPhone()?></td>
-        </tr>
-        <?}?>
+        <?php if (!empty($users)): ?>
+            <?php foreach ($users as $user): ?>
+                <?php if ($user !== null): ?>
+                    <tr>
+                        <td><?= $user->getName() ?></td>
+                        <td><?= $user->getEmail() ?></td>
+                        <td><?= $user->getCity() ?></td>
+                        <td><?= $user->getPhone() ?></td>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="4">No users found.</td>
+            </tr>
+        <?php endif; ?>
     </tbody>
 </table>
 
@@ -56,6 +64,23 @@
     </div>
 </form>
 
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successModalLabel">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="background-color: lightgreen;">
+        New User successfully submitted!
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 $(document).ready(function() {
     $('#userForm').on('submit', function(event) {
@@ -66,7 +91,10 @@ $(document).ready(function() {
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
-                var newUser = JSON.parse(response);
+                console.log("Response received:", response);
+
+                // Directly use the response object
+                var newUser = response;
 
                 $('#userTable tbody').append(
                     '<tr>' +
@@ -78,10 +106,24 @@ $(document).ready(function() {
                 );
 
                 $('#userForm')[0].reset();
+
+                $('#successModal').modal('show');
+
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 3000);
             },
             error: function() {
                 alert('There was an error processing your request.');
             }
+        });
+    });
+
+    // Filter by city functionality
+    $('#cityFilter').on('keyup', function() {
+        var filterValue = $(this).val().toLowerCase();
+        $('#userTable tbody tr').filter(function() {
+            $(this).toggle($(this).find('td:nth-child(3)').text().toLowerCase().indexOf(filterValue) > -1);
         });
     });
 });

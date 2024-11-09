@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` text NOT NULL,
   `email` text NOT NULL,
   `city` text NOT NULL,
-  `created_at` datetime NOT NULL,
+  `phone` text NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 

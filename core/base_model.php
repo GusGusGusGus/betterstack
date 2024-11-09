@@ -156,27 +156,29 @@ class BaseModel {
 	 * Builds WHERE string based on given conditions
 	 * Can handle basic equality or IN using array as condition value
 	 */
-	private static function buildWhere($conditions){
-		$where = '1';
-		foreach($conditions as $key => $condition){
-			if(is_array($condition)){
-				$condString = implode(', ',self::escapeValue($condition));
-				$where .= ' AND `'.$key.'` IN ('.$condString.')';
-			}else
-				$where .= ' AND `'.$key.'` = '.self::escapeValue($condition);
-		}	
-		return $where;
+	protected static function buildWhere($conditions){
+		if (empty($conditions)) {
+			return '';
+		}
+		$whereClauses = [];
+		foreach ($conditions as $field => $value) {
+			$whereClauses[] = "`$field` = " . self::escapeValue($value);
+		}
+		return 'WHERE ' . implode(' AND ', $whereClauses);
 	}
 	
 	/**
 	 * Builds ORDER BY string based on given array
 	 */
-	private static function buildOrderBy($order){
-		$sort = !empty($order)?'ORDER BY':'';
-		foreach($order as $key => $dir){
-			$sort .= ' '.$key.' '.$dir;
+	protected static function buildOrderBy($order){
+		if (empty($order)) {
+			return '';
 		}
-		return $sort;
+		$orderClauses = [];
+		foreach ($order as $field => $direction) {
+			$orderClauses[] = "`$field` $direction";
+		}
+		return 'ORDER BY ' . implode(', ', $orderClauses);
 	}
 	
 	/**
@@ -189,14 +191,14 @@ class BaseModel {
 	/**
 	 * Builds SELECT string based on given array
 	 */
-	private static function buildSelect($fields){
+	protected static function buildSelect($fields){
 		if($fields != '*')$fields = '`'.implode('`, `',$fields).'`';
 		// If $fields was empty array select at least id
 		if($fields == '``'){
 			$fields = '`id`';
 		}
 		// If $fields doesn't contain id select it too
-		elseif($fields != '*' && !in_array('id', $fields)){
+		elseif($fields != '*' && !in_array('id', explode('`, `', trim($fields, '`')))){
 			$fields = '`id`, '.$fields;
 		}
 		return $fields;
@@ -205,7 +207,7 @@ class BaseModel {
 	/**
 	 * Builds UPDATE data string from given data
 	 */
-	private static function buildUpdateData($data){
+	protected static function buildUpdateData($data){
 		$datas = array();
 		foreach($data as $field => $value){
 			$datas[] = '`'.$field.'` = '.self::escapeValue($value);
@@ -221,7 +223,7 @@ class BaseModel {
 	 * 	'values'  => 'values string'
 	 * );
 	 */
-	private static function buildInsertData($data){
+	protected static function buildInsertData($data){
 		$columns = '`'.implode('`, `',array_keys($data)).'`';
 		$values = implode(',',self::escapeValue(array_values($data)));
 		return array(

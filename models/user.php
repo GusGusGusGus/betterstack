@@ -28,7 +28,7 @@ class User extends BaseModel{
         return $this->getField('phone');
     }
 
-    public function insert($data) {
+    public function insert($data = []) {
         $stmt = $this->db->mysqli->prepare("INSERT INTO " . self::tableName . " (name, email, city, phone) VALUES (?, ?, ?, ?)");
         if ($stmt === false) {
             die("Prepare failed: (" . $this->db->mysqli->errno . ") " . $this->db->mysqli->error);
@@ -40,6 +40,24 @@ class User extends BaseModel{
         }
 
         $stmt->close();
+    }
+
+    public static function find($db, $fields = '*', $conditions = array(), $order = array(), $limit = null) {
+        $where = self::buildWhere($conditions);
+        $sort = self::buildOrderBy($order);
+        $limitStr = $limit ? 'LIMIT ' . (is_array($limit) ? implode(',', $limit) : $limit) : '';
+
+        $query = "SELECT $fields FROM " . self::tableName . " $where $sort $limitStr";
+
+        $res = $db->query($query);
+
+        $ret = array();
+        foreach ($res as $result) {
+            $user = new self($db);
+            $user->setFields($result);
+            $ret[] = $user;
+        }
+        return $ret;
     }
 	
 }
