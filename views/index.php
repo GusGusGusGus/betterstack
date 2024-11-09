@@ -1,4 +1,5 @@
 <h1>PHP Test Application</h1>
+<button id="nightModeToggle" class="btn btn-secondary">Toggle Night Mode</button>
 <div class="form-group">
     <label for="cityFilter" class="control-label">Filter by City:</label>
     <input type="text" id="cityFilter" class="form-control" placeholder="Enter city name">
@@ -37,24 +38,28 @@
         <label for="name" class="col-sm-2 control-label">Name:</label>
         <div class="col-sm-10">
             <input name="name" type="text" class="form-control" id="name"/>
+            <small class="form-text text-danger" id="nameError"></small>
         </div>
     </div>
     <div class="form-group">
         <label for="email" class="col-sm-2 control-label">E-mail:</label>
         <div class="col-sm-10">
             <input name="email" type="text" class="form-control" id="email"/>
+            <small class="form-text text-danger" id="emailError"></small>
         </div>
     </div>
     <div class="form-group">
         <label for="city" class="col-sm-2 control-label">City:</label>
         <div class="col-sm-10">
             <input name="city" type="text" class="form-control" id="city"/>
+            <small class="form-text text-danger" id="cityError"></small>
         </div>
     </div>
     <div class="form-group">
         <label for="phone" class="col-sm-2 control-label">Phone:</label>
         <div class="col-sm-10">
             <input name="phone" type="text" class="form-control" id="phone"/>
+            <small class="form-text text-danger" id="phoneError"></small>
         </div>
     </div>
     <div class="form-group">
@@ -86,6 +91,37 @@ $(document).ready(function() {
     $('#userForm').on('submit', function(event) {
         event.preventDefault(); 
 
+        // Clear previous error messages
+        $('.form-text.text-danger').text('');
+
+        // Validate form inputs
+        let isValid = true;
+        const name = $('#name').val().trim();
+        const email = $('#email').val().trim();
+        const city = $('#city').val().trim();
+        const phone = $('#phone').val().trim();
+
+        if (name === '') {
+            $('#nameError').text('Name is required.');
+            isValid = false;
+        }
+        if (email === '' || !validateEmail(email)) {
+            $('#emailError').text('Valid email is required.');
+            isValid = false;
+        }
+        if (city === '') {
+            $('#cityError').text('City is required.');
+            isValid = false;
+        }
+        if (phone === '' || !validatePhone(phone)) {
+            $('#phoneError').text('Valid phone number is required.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return;
+        }
+
         $.ajax({
             url: 'create.php',
             type: 'POST',
@@ -93,7 +129,6 @@ $(document).ready(function() {
             success: function(response) {
                 console.log("Response received:", response);
 
-                // Directly use the response object
                 var newUser = response;
 
                 $('#userTable tbody').append(
@@ -126,5 +161,23 @@ $(document).ready(function() {
             $(this).toggle($(this).find('td:nth-child(3)').text().toLowerCase().indexOf(filterValue) > -1);
         });
     });
+
+    // Night mode toggle functionality
+    $('#nightModeToggle').on('click', function() {
+        $('body').toggleClass('night-mode');
+        $(this).find('i').toggleClass('fa-moon fa-sun');
+    });
+
+    // Email validation function
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    // Phone validation function
+    function validatePhone(phone) {
+        const re = /^\d{3}-\d{3}-\d{4}$/; // Example pattern: 123-456-7890
+        return re.test(phone);
+    }
 });
 </script>

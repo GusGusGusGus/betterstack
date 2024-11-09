@@ -1,0 +1,39 @@
+body {
+    font-family: 'Chakra Petch', sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: #f2f2f2; /* Light grey for odd rows */
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #ffffff; /* White for even rows */
+}
+
+.night-mode {
+    background-color: #2b2d2f;
+    color: #f8f9fa;
+}
+
+.night-mode .table tbody tr:nth-child(odd) {
+    background-color: #3a3a3a; /* Darker grey for odd rows in night mode */
+    color: #39393a;
+}
+
+.night-mode .table tbody tr:nth-child(even) {
+    background-color: #2a2a2a; /* Light grey for even rows in night mode */
+}
+
+.night-mode .modal-content {
+    background-color: #343a40;
+}
+
+.form-text.text-danger {
+    color: #dc3545; /* Bootstrap's danger color */
+}
+
+.night-mode .form-text.text-danger {
+    color: #ff6b6b; /* Slightly lighter red for night mode */
+}
