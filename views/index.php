@@ -176,7 +176,12 @@ $(document).ready(function() {
 
     // Phone validation function
     function validatePhone(phone) {
-        const re = /^\d{3}-\d{3}-\d{4}$/; // Example pattern: 123-456-7890
+        // Allows:
+        // - Optional + or 00 prefix
+        // - Optional country code
+        // - Optional spaces or hyphens between numbers
+        // - Minimum 9 digits, maximum 15 digits (following ITU-T E.164)
+        const re = /^(?:\+|00)?(?:[0-9] ?){9,15}$/; 
         return re.test(phone);
     }
 });
