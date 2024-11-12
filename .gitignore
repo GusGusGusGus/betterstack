@@ -1,2 +1,10 @@
 .settings
 .project
+/ssl
+*.pem
+*.crt
+*.key
+*.csr
+*.cnf
+
+*.zip

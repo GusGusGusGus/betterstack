@@ -14,12 +14,41 @@ class Database {
 	 * Connects to database with given config
 	 */
 	public function connect($config){
-		$this->config = $config;	
-		$this->mysqli = new mysqli($this->config['address'], $this->config['username'], $this->config['password'], $this->config['database']);
+		$this->config = $config;
+
+		// Initialize mysqli with SSL options
+		mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 		
+		$this->mysqli = mysqli_init();
+		
+		// Set SSL certificate
+		$this->mysqli->ssl_set(
+			NULL,                           // key
+			NULL,                           // cert
+			$this->config['sslca'],        // ca
+			NULL,                           // capath
+			NULL                           // cipher
+		);
+		
+		// Set SSL verification option
+		$this->mysqli->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+		
+		// Connect with SSL
+		$this->mysqli->real_connect(
+			$this->config['address'],
+			$this->config['username'],
+			$this->config['password'],
+			$this->config['database'],
+			$this->config['port'],
+			NULL,
+			MYSQLI_CLIENT_SSL
+		);
+
 		if ($this->mysqli->connect_errno) {
 			echo "Failed to connect to MySQL: " . $this->mysqli->connect_error;
+			exit;
 		}
+
 		// Set correct encoding
 		$this->mysqli->query("SET CHARACTER SET utf8");
 	}
