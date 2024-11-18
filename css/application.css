@@ -37,3 +37,14 @@ body {
 .night-mode .form-text.text-danger {
     color: #ff6b6b; /* Slightly lighter red for night mode */
 }
+
+/* Light mode grey text */
+.light-mode .commit-grey {
+    color: grey; 
+}
+
+/* Dark mode grey text */
+.dark-mode .commit-grey {
+    color: lightgrey; 
+}
+
